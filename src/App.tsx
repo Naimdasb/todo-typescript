@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
 
+import useLocalStorage from './hooks/localStorageHook'
+
 type FormElement = React.FormEvent<HTMLFormElement>;
 
 interface ITask {
@@ -9,8 +11,8 @@ interface ITask {
 
 function App(): JSX.Element {
   
-  const [newTask, setNewTask] = useState<string>('');
-  const [tasks, setTasks] = useState<ITask[]>([])
+  const [newTask, setNewTask] = useState('');
+  const [tasks, setTasks] = useLocalStorage<ITask []>('data',[]);
   const taskInput = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (e: FormElement) => {
@@ -20,9 +22,10 @@ function App(): JSX.Element {
       taskInput.current?.focus();
   }
 
-  const addTask = (name: string):void => {
+  const addTask = (name: string) => {
     const newTasks = [...tasks, {name: name, done: false}];
     setTasks(newTasks);
+   
   }
 
   const toggleDoneTask = (i: number):void => {
@@ -37,9 +40,18 @@ function App(): JSX.Element {
     setTasks(newTasks);
   }
 
+  const removeHistory = ():void => {
+    setTasks([])
+  }
+
 
   return (
     <div className='container p-2'>
+      <h1 style={{textAlign: 'center'}}>Todo App with TypeScript and LocalStorage Hook</h1>
+      <h2 style={{textAlign: 'center'}}>Remove History? <button className='btn btn-info' onClick={() => removeHistory()}>
+                    🗑
+                  </button></h2>
+      
       <div className="row m">
         <div className="col-md-6 offset-md-3">
             <div className="card p-2">
